@@ -1,10 +1,13 @@
 [package]
 name = "gpui-symbols"
 version = "0.1.0"
-edition = "2021"
 description = "SF Symbols rendering for GPUI"
-license = "MIT OR Apache-2.0"
 authors = ["AprilNEA <dev@aprilnea.com> (https://aprilnea.me)"]
+documentation = "https://docs.rs/gpui-symbols"
+homepage = "https://gpui.dev"
+repository = "https://github.com/AprilNEA/gpui-symbols"
+license = "MIT OR Apache-2.0"
+edition = "2021"
 
 [lib]
 name = "gpui_symbols"
