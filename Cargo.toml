@@ -1,0 +1,28 @@
+[package]
+name = "gpui-symbols"
+version = "0.1.0"
+edition = "2021"
+description = "SF Symbols rendering for GPUI"
+license = "MIT OR Apache-2.0"
+authors = ["AprilNEA <dev@aprilnea.com> (https://aprilnea.me)"]
+
+[lib]
+name = "gpui_symbols"
+path = "src/lib.rs"
+
+[[example]]
+name = "basic"
+path = "examples/basic.rs"
+required-features = ["gpui"]
+
+[features]
+default = []
+gpui = ["dep:gpui", "dep:smallvec", "dep:image"]
+
+[dependencies]
+gpui = { version = "0.2.2", default-features = false, optional = true }
+smallvec = { version = "1.13", optional = true }
+image = { version = "0.25", optional = true }
+
+[target.'cfg(target_os = "macos")'.dependencies]
+objc = "0.2"
