@@ -16,11 +16,12 @@ path = "src/lib.rs"
 [[example]]
 name = "basic"
 path = "examples/basic.rs"
-required-features = ["gpui"]
+required-features = ["component"]
 
 [features]
 default = []
 gpui = ["dep:gpui", "dep:smallvec", "dep:image"]
+component = ["gpui"]
 
 [dependencies]
 gpui = { version = "0.2.2", default-features = false, optional = true }
