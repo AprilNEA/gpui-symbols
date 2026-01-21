@@ -1,5 +1,10 @@
 # gpui-symbols
 
+[![Crates.io](https://img.shields.io/crates/v/gpui-symbols.svg)](https://crates.io/crates/gpui-symbols)
+[![Documentation](https://docs.rs/gpui-symbols/badge.svg)](https://docs.rs/gpui-symbols)
+[![License](https://img.shields.io/crates/l/gpui-symbols.svg)](https://github.com/AprilNEA/gpui-symbols#license)
+[![Downloads](https://img.shields.io/crates/d/gpui-symbols.svg)](https://crates.io/crates/gpui-symbols)
+
 macOS SF Symbols rendering for Rust / GPUI applications.
 
 ## Installation
