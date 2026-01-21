@@ -1,0 +1,14 @@
+[package]
+name = "gpui-sfsymbols"
+version = "0.1.0"
+description = "SF Symbols for GPUI - re-exports gpui-symbols with sfsymbols presets"
+authors = ["AprilNEA <dev@aprilnea.com> (https://aprilnea.me)"]
+documentation = "https://docs.rs/gpui-sfsymbols"
+repository = "https://github.com/AprilNEA/gpui-symbols"
+license = "MIT OR Apache-2.0"
+edition = "2021"
+keywords = ["sf-symbols", "gpui", "macos", "icons", "apple"]
+categories = ["gui", "os::macos-apis"]
+
+[dependencies]
+gpui-symbols = { version = "0.3", default-features = true }

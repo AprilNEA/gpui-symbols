@@ -1683,7 +1683,7 @@ dependencies = [
 
 [[package]]
 name = "gpui-symbols"
-version = "0.5.3"
+version = "0.6.0"
 dependencies = [
  "gpui",
  "image",
@@ -3928,9 +3928,9 @@ dependencies = [
 
 [[package]]
 name = "sfsymbols"
-version = "0.1.1"
+version = "0.2.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "79b3e2a382a3b97925ea9613f5f0dec6675bf30d8141eed0d43a931f9b689fb9"
+checksum = "05a880ecfe7f382a547bd233faf6938a07ae8d847575f0ab7a80f02a7d75dcdf"
 
 [[package]]
 name = "sha1_smol"

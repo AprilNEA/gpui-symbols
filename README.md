@@ -11,13 +11,13 @@ macOS SF Symbols rendering for Rust / GPUI applications.
 
 ```toml
 [dependencies]
-gpui-symbols = "0.5"
+gpui-symbols = "0.6"
 
 # With GPUI integration
-gpui-symbols = { version = "0.5", features = ["gpui"] }
+gpui-symbols = { version = "0.6", features = ["gpui"] }
 
 # With Icon component (recommended for GPUI apps)
-gpui-symbols = { version = "0.5", features = ["component"] }
+gpui-symbols = { version = "0.6", features = ["component"] }
 ```
 
 ## Usage
@@ -75,6 +75,38 @@ use gpui_symbols::{Icon, sfsymbols::SfSymbolV7};
 // All 9000+ SF Symbols as compile-time checked enums
 let icon = Icon::from_name(SfSymbolV7::StarFill);
 let heart = Icon::from_name(SfSymbolV7::HeartFill).text_color(0xFF0000);
+```
+
+#### Using Unified Symbol Enum (New in 0.6)
+
+Use `SfSymbolAll` for a single type covering all SF Symbols versions:
+
+```rust
+use gpui_symbols::{Icon, sfsymbols::SfSymbolAll};
+
+// Unified enum with version metadata
+let icon = Icon::from_name(SfSymbolAll::Gearshape);
+
+// Check minimum version required
+let (major, minor) = SfSymbolAll::Gearshape.min_version(); // (2, 0)
+```
+
+This is useful for cross-platform abstractions:
+
+```rust
+use gpui_symbols::sfsymbols::SfSymbolAll;
+
+enum AppIcon { Settings, Search, Plus }
+
+impl AppIcon {
+    fn sf_symbol(&self) -> SfSymbolAll {
+        match self {
+            Self::Settings => SfSymbolAll::Gearshape,
+            Self::Search => SfSymbolAll::Magnifyingglass,
+            Self::Plus => SfSymbolAll::Plus,
+        }
+    }
+}
 ```
 
 #### Define Custom Icon Enums

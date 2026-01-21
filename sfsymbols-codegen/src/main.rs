@@ -87,6 +87,14 @@ struct Symbol {
     rust_name: String,
 }
 
+#[derive(Debug, Clone)]
+struct UnifiedSymbol {
+    name: String,
+    rust_name: String,
+    min_major: u32,
+    min_minor: u32,
+}
+
 fn main() -> Result<(), Box<dyn std::error::Error>> {
     // Default: read from SF Symbols.app (requires installing from App Store)
     let plist_path = std::env::args().nth(1).unwrap_or_else(|| {
@@ -134,6 +142,22 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     for symbols in by_major.values_mut() {
         symbols.sort_by(|a, b| a.rust_name.cmp(&b.rust_name));
     }
+
+    // Build unified symbols (deduplicated, with min version)
+    let mut unified_map: BTreeMap<String, UnifiedSymbol> = BTreeMap::new();
+    for ((major, minor), symbols) in &by_minor {
+        for symbol in symbols {
+            unified_map
+                .entry(symbol.rust_name.clone())
+                .or_insert_with(|| UnifiedSymbol {
+                    name: symbol.name.clone(),
+                    rust_name: symbol.rust_name.clone(),
+                    min_major: *major,
+                    min_minor: *minor,
+                });
+        }
+    }
+    let unified_symbols: Vec<UnifiedSymbol> = unified_map.into_values().collect();
 
     let output_path = Path::new(&output_dir);
     fs::create_dir_all(output_path)?;
@@ -206,6 +230,12 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         lib.push_str(&format!("pub type SfSymbol = SfSymbolV{};\n", latest));
     }
 
+    // Unified module
+    lib.push_str("\n#[cfg(feature = \"unified\")]\n");
+    lib.push_str("mod unified;\n");
+    lib.push_str("#[cfg(feature = \"unified\")]\n");
+    lib.push_str("pub use unified::SfSymbolAll;\n");
+
     fs::write(output_path.join("lib.rs"), &lib)?;
     println!("Generated lib.rs");
 
@@ -226,6 +256,14 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         fs::write(output_path.join(&filename), &content)?;
         println!("Generated {} ({} symbols, merged)", filename, symbols.len());
     }
+
+    // Generate unified file (SfSymbolAll)
+    let unified_content = generate_unified_enum_file(&unified_symbols);
+    fs::write(output_path.join("unified.rs"), &unified_content)?;
+    println!(
+        "Generated unified.rs ({} symbols, deduplicated)",
+        unified_symbols.len()
+    );
 
     // Print features for Cargo.toml
     println!("\n# Cargo.toml [features]:");
@@ -250,16 +288,99 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         all_features.push(format!("\"v{}-{}\"", major, minor));
     }
     println!("all = [{}]", all_features.join(", "));
+    println!("unified = []");
 
     let total_minor: usize = by_minor.values().map(|v| v.len()).sum();
     println!(
-        "\nTotal: {} symbols, {} major versions, {} minor versions",
+        "\nTotal: {} symbols ({} deduplicated), {} major versions, {} minor versions",
         total_minor,
+        unified_symbols.len(),
         major_versions.len(),
         minor_versions.len()
     );
 
     Ok(())
+}
+
+fn generate_unified_enum_file(symbols: &[UnifiedSymbol]) -> String {
+    let mut content = String::new();
+
+    content.push_str("//! Auto-generated unified SF Symbols enum.\n");
+    content.push_str("//! Contains all symbols from all versions, deduplicated.\n");
+    content.push_str("//! Do not edit manually - regenerate with codegen.\n\n");
+
+    content.push_str("/// Unified SF Symbols enum containing all symbols from all versions.\n");
+    content.push_str("///\n");
+    content.push_str("/// Each symbol is deduplicated and includes version metadata.\n");
+    content.push_str("/// Use `min_version()` to check the minimum SF Symbols version required.\n");
+    content.push_str("#[derive(Clone, Copy, Debug, PartialEq, Eq, Hash)]\n");
+    content.push_str("#[non_exhaustive]\n");
+    content.push_str("pub enum SfSymbolAll {\n");
+
+    for symbol in symbols {
+        content.push_str(&format!(
+            "    /// `{}` (since v{}.{})\n",
+            symbol.name, symbol.min_major, symbol.min_minor
+        ));
+        content.push_str(&format!("    {},\n", symbol.rust_name));
+    }
+
+    content.push_str("}\n\n");
+
+    content.push_str("impl SfSymbolAll {\n");
+    content.push_str("    /// Returns the SF Symbol name string.\n");
+    content.push_str("    #[inline]\n");
+    content.push_str("    pub const fn name(&self) -> &'static str {\n");
+    content.push_str("        match self {\n");
+
+    for symbol in symbols {
+        content.push_str(&format!(
+            "            Self::{} => \"{}\",\n",
+            symbol.rust_name, symbol.name
+        ));
+    }
+
+    content.push_str("        }\n");
+    content.push_str("    }\n\n");
+
+    content.push_str("    /// Returns the minimum SF Symbols version required for this symbol.\n");
+    content.push_str("    ///\n");
+    content.push_str("    /// Returns `(major, minor)` version tuple.\n");
+    content.push_str("    #[inline]\n");
+    content.push_str("    pub const fn min_version(&self) -> (u32, u32) {\n");
+    content.push_str("        match self {\n");
+
+    for symbol in symbols {
+        content.push_str(&format!(
+            "            Self::{} => ({}, {}),\n",
+            symbol.rust_name, symbol.min_major, symbol.min_minor
+        ));
+    }
+
+    content.push_str("        }\n");
+    content.push_str("    }\n\n");
+
+    content.push_str("    /// Returns the minimum major SF Symbols version required.\n");
+    content.push_str("    #[inline]\n");
+    content.push_str("    pub const fn min_major_version(&self) -> u32 {\n");
+    content.push_str("        self.min_version().0\n");
+    content.push_str("    }\n");
+    content.push_str("}\n\n");
+
+    content.push_str("impl AsRef<str> for SfSymbolAll {\n");
+    content.push_str("    #[inline]\n");
+    content.push_str("    fn as_ref(&self) -> &str {\n");
+    content.push_str("        self.name()\n");
+    content.push_str("    }\n");
+    content.push_str("}\n\n");
+
+    content.push_str("impl std::fmt::Display for SfSymbolAll {\n");
+    content.push_str("    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {\n");
+    content.push_str("        f.write_str(self.name())\n");
+    content.push_str("    }\n");
+    content.push_str("}\n");
+
+    content
 }
 
 fn generate_enum_file(enum_name: &str, symbols: &[Symbol]) -> String {

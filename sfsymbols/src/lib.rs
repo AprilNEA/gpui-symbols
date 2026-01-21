@@ -150,3 +150,8 @@ pub use v7::SfSymbolV7;
 /// Alias for the latest SF Symbols version (SfSymbolV7)
 #[cfg(feature = "v7")]
 pub type SfSymbol = SfSymbolV7;
+
+#[cfg(feature = "unified")]
+mod unified;
+#[cfg(feature = "unified")]
+pub use unified::SfSymbolAll;

@@ -76,6 +76,7 @@ impl_icon_name_for_sfsymbols!(
     sfsymbols::SfSymbolV5,
     sfsymbols::SfSymbolV6,
     sfsymbols::SfSymbolV7,
+    sfsymbols::SfSymbolAll,
 );
 
 /// A GPUI-compatible Icon component for rendering SF Symbols.
