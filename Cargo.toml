@@ -1,6 +1,6 @@
 [package]
 name = "gpui-symbols"
-version = "0.5.0"
+version = "0.5.1"
 description = "Native SF Symbols for GPUI with type-safe Icon component"
 authors = ["AprilNEA <dev@aprilnea.com> (https://aprilnea.me)"]
 documentation = "https://docs.rs/gpui-symbols"
@@ -19,10 +19,11 @@ path = "examples/basic.rs"
 required-features = ["component"]
 
 [features]
-default = ["component", "presets"]
+default = ["component", "presets", "cache"]
 gpui = ["dep:gpui", "dep:smallvec", "dep:image"]
 component = ["gpui"]
 presets = ["dep:sfsymbols", "sfsymbols/all"]
+cache = ["gpui"]
 
 [dependencies]
 gpui = { version = "0.2.2", default-features = false, optional = true }

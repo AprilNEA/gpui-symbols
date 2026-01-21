@@ -2,6 +2,81 @@
 
 use crate::platform;
 
+#[cfg(feature = "cache")]
+use std::collections::HashMap;
+#[cfg(feature = "cache")]
+use std::sync::{Mutex, OnceLock};
+
+/// Cache key for rendered symbols.
+#[cfg(feature = "cache")]
+#[derive(Clone, PartialEq, Eq, Hash)]
+struct CacheKey {
+    name: String,
+    size_bits: u32,
+    scale_bits: u32,
+    color: u32,
+    weight: u8,
+    symbol_scale: u8,
+    rendering_mode: u8,
+}
+
+#[cfg(feature = "cache")]
+impl CacheKey {
+    fn new(
+        name: &str,
+        size: f32,
+        scale: f32,
+        color: u32,
+        weight: SymbolWeight,
+        symbol_scale: SymbolScale,
+        rendering_mode: RenderingMode,
+    ) -> Self {
+        Self {
+            name: name.to_string(),
+            size_bits: size.to_bits(),
+            scale_bits: scale.to_bits(),
+            color,
+            weight: weight as u8,
+            symbol_scale: symbol_scale as u8,
+            rendering_mode: rendering_mode as u8,
+        }
+    }
+}
+
+/// Global cache for rendered symbols.
+#[cfg(feature = "cache")]
+type SymbolCache = HashMap<CacheKey, std::sync::Arc<gpui::RenderImage>>;
+
+#[cfg(feature = "cache")]
+static SYMBOL_CACHE: OnceLock<Mutex<SymbolCache>> = OnceLock::new();
+
+#[cfg(feature = "cache")]
+fn get_cache() -> &'static Mutex<SymbolCache> {
+    SYMBOL_CACHE.get_or_init(|| Mutex::new(HashMap::new()))
+}
+
+/// Clear the global symbol cache.
+///
+/// Call this if you need to free memory or if system appearance changed.
+#[cfg(feature = "cache")]
+pub fn clear_cache() {
+    if let Some(cache) = SYMBOL_CACHE.get() {
+        if let Ok(mut guard) = cache.lock() {
+            guard.clear();
+        }
+    }
+}
+
+/// Get the number of cached symbols.
+#[cfg(feature = "cache")]
+pub fn cache_size() -> usize {
+    SYMBOL_CACHE
+        .get()
+        .and_then(|c| c.lock().ok())
+        .map(|g| g.len())
+        .unwrap_or(0)
+}
+
 /// Symbol weight for SF Symbols.
 ///
 /// Corresponds to NSFontWeight values used in NSImageSymbolConfiguration.
@@ -244,10 +319,61 @@ impl SfSymbol {
 
     /// Render the symbol to a GPUI RenderImage.
     ///
+    /// With the `cache` feature enabled, results are cached globally
+    /// to avoid redundant rendering. Use [`clear_cache`] to free memory if needed.
+    ///
     /// Returns `None` if the symbol cannot be found or rendered.
     ///
     /// Requires the `gpui` feature.
-    #[cfg(feature = "gpui")]
+    #[cfg(all(feature = "gpui", feature = "cache"))]
+    pub fn render(&self) -> Option<Arc<RenderImage>> {
+        let cache_key = CacheKey::new(
+            &self.name,
+            self.size,
+            self.scale,
+            self.color,
+            self.weight,
+            self.symbol_scale,
+            self.rendering_mode,
+        );
+
+        // Check cache first
+        {
+            let cache = get_cache();
+            if let Ok(guard) = cache.lock() {
+                if let Some(cached) = guard.get(&cache_key) {
+                    return Some(Arc::clone(cached));
+                }
+            }
+        }
+
+        // Render and cache
+        let (width, height, mut data) = self.render_rgba()?;
+
+        // Convert RGBA to BGRA for GPUI's Metal renderer
+        rgba_to_bgra(&mut data);
+
+        let rgba_image = RgbaImage::from_raw(width, height, data)?;
+        let frame = Frame::new(rgba_image);
+        let image = Arc::new(RenderImage::new(smallvec![frame]));
+
+        // Store in cache
+        {
+            let cache = get_cache();
+            if let Ok(mut guard) = cache.lock() {
+                guard.insert(cache_key, Arc::clone(&image));
+            }
+        }
+
+        Some(image)
+    }
+
+    /// Render the symbol to a GPUI RenderImage.
+    ///
+    /// Returns `None` if the symbol cannot be found or rendered.
+    ///
+    /// Requires the `gpui` feature.
+    #[cfg(all(feature = "gpui", not(feature = "cache")))]
     pub fn render(&self) -> Option<Arc<RenderImage>> {
         let (width, height, mut data) = self.render_rgba()?;
 

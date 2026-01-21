@@ -63,6 +63,10 @@ mod icon;
 // Re-export main types
 pub use symbol::{RenderingMode, SfSymbol, SymbolScale, SymbolWeight};
 
+// Re-export cache functions
+#[cfg(feature = "cache")]
+pub use symbol::{cache_size, clear_cache};
+
 #[cfg(feature = "component")]
 pub use icon::{Icon, IconName};
 

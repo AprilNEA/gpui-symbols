@@ -155,11 +155,26 @@ High-level GPUI component (requires `component` feature).
 
 **`RenderingMode`**: `Monochrome`, `Hierarchical`, `Palette`, `Multicolor`
 
+### Cache Management
+
+With the `cache` feature (enabled by default), rendered symbols are cached globally for performance:
+
+```rust
+use gpui_symbols::{cache_size, clear_cache};
+
+// Get number of cached symbols
+let count = cache_size();
+
+// Clear all cached symbols (e.g., on memory pressure or appearance change)
+clear_cache();
+```
+
 ## Features
 
 | Feature | Description |
 |---------|-------------|
-| `default` | `component` + `presets` |
+| `default` | `component` + `presets` + `cache` |
+| `cache` | Global cache for rendered symbols (implies `gpui`) |
 | `gpui` | GPUI integration, returns `Arc<RenderImage>` |
 | `component` | High-level `Icon` component (implies `gpui`) |
 | `presets` | Type-safe SF Symbols enums via `sfsymbols` crate |
