@@ -1,0 +1,9 @@
+[package]
+name = "sfsymbols-codegen"
+version = "0.1.0"
+edition = "2021"
+publish = false
+
+[dependencies]
+plist = "1.6"
+heck = "0.5"

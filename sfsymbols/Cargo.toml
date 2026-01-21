@@ -1,0 +1,52 @@
+[package]
+name = "sfsymbols"
+version = "0.1.0"
+description = "Type-safe SF Symbols enums for Rust"
+authors = ["AprilNEA <dev@aprilnea.com> (https://aprilnea.me)"]
+documentation = "https://docs.rs/sfsymbols"
+repository = "https://github.com/AprilNEA/gpui-symbols"
+license = "MIT OR Apache-2.0"
+edition = "2021"
+keywords = ["sf-symbols", "macos", "icons", "apple"]
+categories = ["gui", "os::macos-apis"]
+
+[lib]
+name = "sfsymbols"
+path = "src/lib.rs"
+
+[features]
+default = ["v7"]
+# Major versions (merged)
+v1 = []
+v2 = []
+v3 = []
+v4 = []
+v5 = []
+v6 = []
+v7 = []
+# Minor versions (precise)
+v1-0 = []
+v1-1 = []
+v2-0 = []
+v2-1 = []
+v2-2 = []
+v3-0 = []
+v3-1 = []
+v3-2 = []
+v3-3 = []
+v4-0 = []
+v4-1 = []
+v4-2 = []
+v5-0 = []
+v5-1 = []
+v5-2 = []
+v5-3 = []
+v5-4 = []
+v6-0 = []
+v6-1 = []
+v6-2 = []
+v6-3 = []
+v6-4 = []
+v7-0 = []
+# All versions
+all = ["v1", "v2", "v3", "v4", "v5", "v6", "v7", "v1-0", "v1-1", "v2-0", "v2-1", "v2-2", "v3-0", "v3-1", "v3-2", "v3-3", "v4-0", "v4-1", "v4-2", "v5-0", "v5-1", "v5-2", "v5-3", "v5-4", "v6-0", "v6-1", "v6-2", "v6-3", "v6-4", "v7-0"]
