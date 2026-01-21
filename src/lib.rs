@@ -65,3 +65,7 @@ pub use symbol::SfSymbol;
 
 #[cfg(feature = "component")]
 pub use icon::{Icon, IconName};
+
+// Re-export sfsymbols presets
+#[cfg(feature = "presets")]
+pub use sfsymbols;

@@ -19,14 +19,16 @@ path = "examples/basic.rs"
 required-features = ["component"]
 
 [features]
-default = []
+default = ["component", "presets"]
 gpui = ["dep:gpui", "dep:smallvec", "dep:image"]
 component = ["gpui"]
+presets = ["dep:sfsymbols", "sfsymbols/all"]
 
 [dependencies]
 gpui = { version = "0.2.2", default-features = false, optional = true }
 smallvec = { version = "1.13", optional = true }
 image = { version = "0.25", optional = true }
+sfsymbols = { path = "sfsymbols", default-features = false, optional = true }
 
 [target.'cfg(target_os = "macos")'.dependencies]
 objc = "0.2"

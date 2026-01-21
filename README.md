@@ -60,9 +60,21 @@ fn view(window: &mut Window, cx: &mut Context<Self>) -> impl IntoElement {
 }
 ```
 
+#### Using Preset Symbols (Recommended)
+
+With the `presets` feature, use type-safe SF Symbols enums directly:
+
+```rust
+use gpui_symbols::{Icon, sfsymbols::SfSymbolV7};
+
+// All 9000+ SF Symbols as compile-time checked enums
+let icon = Icon::from_name(SfSymbolV7::StarFill);
+let heart = Icon::from_name(SfSymbolV7::HeartFill).text_color(0xFF0000);
+```
+
 #### Define Custom Icon Enums
 
-Use the `define_icons!` macro to create type-safe icon enums:
+Alternatively, use the `define_icons!` macro:
 
 ```rust
 use gpui_symbols::{Icon, define_icons};
@@ -75,7 +87,6 @@ define_icons! {
     }
 }
 
-// Use with Icon::from_name
 let icon = Icon::from_name(AppIcon::Star).text_color(0xFF0000);
 ```
 
@@ -109,9 +120,10 @@ High-level GPUI component (requires `component` feature).
 
 | Feature | Description |
 |---------|-------------|
-| `default` | Core rendering, returns raw RGBA pixels |
+| `default` | `component` + `presets` |
 | `gpui` | GPUI integration, returns `Arc<RenderImage>` |
 | `component` | High-level `Icon` component (implies `gpui`) |
+| `presets` | Type-safe SF Symbols enums via `sfsymbols` crate |
 
 ## Requirements
 

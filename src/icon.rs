@@ -52,6 +52,31 @@ impl IconName for &'static str {
     }
 }
 
+// Implement IconName for sfsymbols enums
+#[cfg(feature = "presets")]
+macro_rules! impl_icon_name_for_sfsymbols {
+    ($($ty:ty),* $(,)?) => {
+        $(
+            impl IconName for $ty {
+                fn name(&self) -> &'static str {
+                    <$ty>::name(self)
+                }
+            }
+        )*
+    };
+}
+
+#[cfg(feature = "presets")]
+impl_icon_name_for_sfsymbols!(
+    sfsymbols::SfSymbolV1,
+    sfsymbols::SfSymbolV2,
+    sfsymbols::SfSymbolV3,
+    sfsymbols::SfSymbolV4,
+    sfsymbols::SfSymbolV5,
+    sfsymbols::SfSymbolV6,
+    sfsymbols::SfSymbolV7,
+);
+
 /// A GPUI-compatible Icon component for rendering SF Symbols.
 ///
 /// This struct implements `IntoElement` and can be used directly in GPUI views,
