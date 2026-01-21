@@ -6,10 +6,13 @@ macOS SF Symbols rendering for Rust / GPUI applications.
 
 ```toml
 [dependencies]
-gpui-symbols = "0.1"
+gpui-symbols = "0.2"
 
 # With GPUI integration
-gpui-symbols = { version = "0.1", features = ["gpui"] }
+gpui-symbols = { version = "0.2", features = ["gpui"] }
+
+# With Icon component (recommended for GPUI apps)
+gpui-symbols = { version = "0.2", features = ["component"] }
 ```
 
 ## Usage
@@ -42,11 +45,45 @@ let image = SfSymbol::new("heart.fill")
 img(ImageSource::Render(image)).size(px(32.))
 ```
 
+### Icon Component (Recommended)
+
+The `Icon` component provides a high-level API similar to GPUI Components:
+
+```rust
+use gpui_symbols::Icon;
+use gpui::px;
+
+fn view(window: &mut Window, cx: &mut Context<Self>) -> impl IntoElement {
+    div()
+        .child(Icon::new("star.fill"))
+        .child(Icon::new("heart.fill").text_color(0xFF0000).with_size(px(24.)))
+}
+```
+
+#### Define Custom Icon Enums
+
+Use the `define_icons!` macro to create type-safe icon enums:
+
+```rust
+use gpui_symbols::{Icon, define_icons};
+
+define_icons! {
+    pub enum AppIcon {
+        Star => "star.fill",
+        Heart => "heart.fill",
+        Settings => "gearshape.fill",
+    }
+}
+
+// Use with Icon::from_name
+let icon = Icon::from_name(AppIcon::Star).text_color(0xFF0000);
+```
+
 ## API
 
 ### `SfSymbol`
 
-Builder for rendering SF Symbols.
+Low-level builder for rendering SF Symbols.
 
 | Method | Description | Default |
 |--------|-------------|---------|
@@ -57,12 +94,24 @@ Builder for rendering SF Symbols.
 | `render_rgba()` | Render to `(width, height, Vec<u8>)` | - |
 | `render()` | Render to `Arc<RenderImage>` (requires `gpui` feature) | - |
 
+### `Icon`
+
+High-level GPUI component (requires `component` feature).
+
+| Method | Description | Default |
+|--------|-------------|---------|
+| `new(name)` | Create icon with SF Symbol name | - |
+| `from_name(T)` | Create from `IconName` type | - |
+| `with_size(Pixels)` | Set icon size | 16px |
+| `text_color(u32)` | Set RGB hex color | 0x000000 |
+
 ## Features
 
 | Feature | Description |
 |---------|-------------|
 | `default` | Core rendering, returns raw RGBA pixels |
 | `gpui` | GPUI integration, returns `Arc<RenderImage>` |
+| `component` | High-level `Icon` component (implies `gpui`) |
 
 ## Requirements
 
@@ -71,10 +120,10 @@ Builder for rendering SF Symbols.
 
 ## Examples
 
-Run the GPUI example:
+Run the example:
 
 ```bash
-cargo run --example basic --features gpui
+cargo run --example basic --features component
 ```
 
 ## Symbol Names
