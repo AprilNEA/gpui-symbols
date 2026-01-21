@@ -65,6 +65,8 @@ mod v6_3;
 mod v6_4;
 #[cfg(feature = "v7-0")]
 mod v7_0;
+#[cfg(feature = "v7-1")]
+mod v7_1;
 
 #[cfg(feature = "v1")]
 mod v1;
@@ -127,6 +129,8 @@ pub use v6_3::SfSymbolV6_3;
 pub use v6_4::SfSymbolV6_4;
 #[cfg(feature = "v7-0")]
 pub use v7_0::SfSymbolV7_0;
+#[cfg(feature = "v7-1")]
+pub use v7_1::SfSymbolV7_1;
 
 #[cfg(feature = "v1")]
 pub use v1::SfSymbolV1;

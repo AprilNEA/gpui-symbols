@@ -88,10 +88,11 @@ struct Symbol {
 }
 
 fn main() -> Result<(), Box<dyn std::error::Error>> {
+    // Default: read from SF Symbols.app (requires installing from App Store)
     let plist_path = std::env::args().nth(1).unwrap_or_else(|| {
-        "../SFSafeSymbols/SymbolsGenerator/Sources/SymbolsGenerator/Resources/name_availability.plist".to_string()
+        "/Applications/SF Symbols.app/Contents/Resources/Metadata/name_availability.plist".to_string()
     });
-    let output_dir = std::env::args().nth(2).unwrap_or_else(|| "../src".to_string());
+    let output_dir = std::env::args().nth(2).unwrap_or_else(|| "../sfsymbols/src".to_string());
 
     println!("Reading plist from: {}", plist_path);
 

@@ -8,6 +8,10 @@ pub enum SfSymbolV7 {
     Ac,
     /// `ac.slash`
     AcSlash,
+    /// `air.conditioner`
+    AirConditioner,
+    /// `air.conditioner.slash`
+    AirConditionerSlash,
     /// `airplane.cloud`
     AirplaneCloud,
     /// `airplane.landed`
@@ -106,6 +110,18 @@ pub enum SfSymbolV7 {
     ArrowUpFolder,
     /// `arrow.up.folder.fill`
     ArrowUpFolderFill,
+    /// `arrowtriangle.backward.inset.filled.trailingthird.rectangle`
+    ArrowtriangleBackwardInsetFilledTrailingthirdRectangle,
+    /// `arrowtriangle.down.2`
+    ArrowtriangleDown2,
+    /// `arrowtriangle.down.2.fill`
+    ArrowtriangleDown2Fill,
+    /// `arrowtriangle.forward.inset.filled.trailingthird.rectangle`
+    ArrowtriangleForwardInsetFilledTrailingthirdRectangle,
+    /// `arrowtriangle.up.2`
+    ArrowtriangleUp2,
+    /// `arrowtriangle.up.2.fill`
+    ArrowtriangleUp2Fill,
     /// `backpack.sensor.tag.radiowaves.left.and.right`
     BackpackSensorTagRadiowavesLeftAndRight,
     /// `backpack.sensor.tag.radiowaves.left.and.right.fill`
@@ -138,6 +154,18 @@ pub enum SfSymbolV7 {
     BriefcaseSensorTagRadiowavesLeftAndRight,
     /// `briefcase.sensor.tag.radiowaves.left.and.right.fill`
     BriefcaseSensorTagRadiowavesLeftAndRightFill,
+    /// `button.horizontal.top`
+    ButtonHorizontalTop,
+    /// `button.horizontal.top.fill`
+    ButtonHorizontalTopFill,
+    /// `button.vertical.left`
+    ButtonVerticalLeft,
+    /// `button.vertical.left.fill`
+    ButtonVerticalLeftFill,
+    /// `button.vertical.right`
+    ButtonVerticalRight,
+    /// `button.vertical.right.fill`
+    ButtonVerticalRightFill,
     /// `calendar.badge`
     CalendarBadge,
     /// `calendar.badge.lock`
@@ -162,6 +190,8 @@ pub enum SfSymbolV7 {
     CameraSensorTagRadiowavesLeftAndRight,
     /// `camera.sensor.tag.radiowaves.left.and.right.fill`
     CameraSensorTagRadiowavesLeftAndRightFill,
+    /// `camera.viewfinder.badge.automatic`
+    CameraViewfinderBadgeAutomatic,
     /// `car.rear.road.lane.dashed.arrowtriangle.2.outward`
     CarRearRoadLaneDashedArrowtriangle2Outward,
     /// `car.window.left.badge.lock`
@@ -364,6 +394,14 @@ pub enum SfSymbolV7 {
     DesktopcomputerBadgeCheckmark,
     /// `desktopcomputer.badge.shield.checkmark`
     DesktopcomputerBadgeShieldCheckmark,
+    /// `digitalcrown`
+    Digitalcrown,
+    /// `digitalcrown.fill`
+    DigitalcrownFill,
+    /// `digitalcrown.horizontal`
+    DigitalcrownHorizontal,
+    /// `digitalcrown.horizontal.fill`
+    DigitalcrownHorizontalFill,
     /// `display.and.screwdriver`
     DisplayAndScrewdriver,
     /// `document.on.trash`
@@ -532,6 +570,8 @@ pub enum SfSymbolV7 {
     HandbagSensorTagRadiowavesLeftAndRight,
     /// `handbag.sensor.tag.radiowaves.left.and.right.fill`
     HandbagSensorTagRadiowavesLeftAndRightFill,
+    /// `head.profile.vision.pro.remove`
+    HeadProfileVisionProRemove,
     /// `headphones.over.ear`
     HeadphonesOverEar,
     /// `headphones.sensor.tag.radiowaves.left.and.right`
@@ -598,6 +638,10 @@ pub enum SfSymbolV7 {
     InsetFilledLeftthirdMiddlethirdRightthirdRectangle,
     /// `inset.filled.pano`
     InsetFilledPano,
+    /// `inset.filled.rectangle.and.person.filled.slash`
+    InsetFilledRectangleAndPersonFilledSlash,
+    /// `inset.filled.rectangle.and.person.filled.slash.rtl`
+    InsetFilledRectangleAndPersonFilledSlashRtl,
     /// `inset.filled.rectangle.and.pointer.arrow`
     InsetFilledRectangleAndPointerArrow,
     /// `inset.filled.topthird.middlethird.bottomthird.rectangle`
@@ -1052,8 +1096,16 @@ pub enum SfSymbolV7 {
     PointerArrowSquare,
     /// `pointer.arrow.square.fill`
     PointerArrowSquareFill,
+    /// `radicand.squareroot`
+    RadicandSquareroot,
+    /// `radicand.squareroot.ar`
+    RadicandSquarerootAr,
     /// `rectangle.3.group.dashed`
     Rectangle3GroupDashed,
+    /// `rectangle.badge.sparkles`
+    RectangleBadgeSparkles,
+    /// `rectangle.badge.sparkles.fill`
+    RectangleBadgeSparklesFill,
     /// `rectangle.grid.1x3`
     RectangleGrid1X3,
     /// `rectangle.grid.1x3.fill`
@@ -1102,6 +1154,8 @@ pub enum SfSymbolV7 {
     SliderHorizontalBelowCircleRighthalfFilled,
     /// `slider.horizontal.below.circle.righthalf.filled.inverse`
     SliderHorizontalBelowCircleRighthalfFilledInverse,
+    /// `slider.horizontal.below.sun.min`
+    SliderHorizontalBelowSunMin,
     /// `sparkle.text.clipboard`
     SparkleTextClipboard,
     /// `sparkle.text.clipboard.fill`
@@ -1124,6 +1178,10 @@ pub enum SfSymbolV7 {
     SpeakerTrianglebadgeExclamationmark,
     /// `speaker.trianglebadge.exclamationmark.fill`
     SpeakerTrianglebadgeExclamationmarkFill,
+    /// `star.rectangle`
+    StarRectangle,
+    /// `star.rectangle.fill`
+    StarRectangleFill,
     /// `steeringwheel.badge.lock`
     SteeringwheelBadgeLock,
     /// `strikethrough.double`
@@ -1245,6 +1303,8 @@ impl SfSymbolV7 {
         match self {
             Self::Ac => "ac",
             Self::AcSlash => "ac.slash",
+            Self::AirConditioner => "air.conditioner",
+            Self::AirConditionerSlash => "air.conditioner.slash",
             Self::AirplaneCloud => "airplane.cloud",
             Self::AirplaneLanded => "airplane.landed",
             Self::AirplanePathDotted => "airplane.path.dotted",
@@ -1294,6 +1354,12 @@ impl SfSymbolV7 {
             Self::ArrowTriangleheadTurnUpRight => "arrow.trianglehead.turn.up.right",
             Self::ArrowUpFolder => "arrow.up.folder",
             Self::ArrowUpFolderFill => "arrow.up.folder.fill",
+            Self::ArrowtriangleBackwardInsetFilledTrailingthirdRectangle => "arrowtriangle.backward.inset.filled.trailingthird.rectangle",
+            Self::ArrowtriangleDown2 => "arrowtriangle.down.2",
+            Self::ArrowtriangleDown2Fill => "arrowtriangle.down.2.fill",
+            Self::ArrowtriangleForwardInsetFilledTrailingthirdRectangle => "arrowtriangle.forward.inset.filled.trailingthird.rectangle",
+            Self::ArrowtriangleUp2 => "arrowtriangle.up.2",
+            Self::ArrowtriangleUp2Fill => "arrowtriangle.up.2.fill",
             Self::BackpackSensorTagRadiowavesLeftAndRight => "backpack.sensor.tag.radiowaves.left.and.right",
             Self::BackpackSensorTagRadiowavesLeftAndRightFill => "backpack.sensor.tag.radiowaves.left.and.right.fill",
             Self::BedDoubleBadgeCheckmark => "bed.double.badge.checkmark",
@@ -1310,6 +1376,12 @@ impl SfSymbolV7 {
             Self::BookBadgePlusFill => "book.badge.plus.fill",
             Self::BriefcaseSensorTagRadiowavesLeftAndRight => "briefcase.sensor.tag.radiowaves.left.and.right",
             Self::BriefcaseSensorTagRadiowavesLeftAndRightFill => "briefcase.sensor.tag.radiowaves.left.and.right.fill",
+            Self::ButtonHorizontalTop => "button.horizontal.top",
+            Self::ButtonHorizontalTopFill => "button.horizontal.top.fill",
+            Self::ButtonVerticalLeft => "button.vertical.left",
+            Self::ButtonVerticalLeftFill => "button.vertical.left.fill",
+            Self::ButtonVerticalRight => "button.vertical.right",
+            Self::ButtonVerticalRightFill => "button.vertical.right.fill",
             Self::CalendarBadge => "calendar.badge",
             Self::CalendarBadgeLock => "calendar.badge.lock",
             Self::CalendarDayTimelineLeadingCircle => "calendar.day.timeline.leading.circle",
@@ -1322,6 +1394,7 @@ impl SfSymbolV7 {
             Self::CalendarDayTimelineTrailingCircleFill => "calendar.day.timeline.trailing.circle.fill",
             Self::CameraSensorTagRadiowavesLeftAndRight => "camera.sensor.tag.radiowaves.left.and.right",
             Self::CameraSensorTagRadiowavesLeftAndRightFill => "camera.sensor.tag.radiowaves.left.and.right.fill",
+            Self::CameraViewfinderBadgeAutomatic => "camera.viewfinder.badge.automatic",
             Self::CarRearRoadLaneDashedArrowtriangle2Outward => "car.rear.road.lane.dashed.arrowtriangle.2.outward",
             Self::CarWindowLeftBadgeLock => "car.window.left.badge.lock",
             Self::CarWindowRightBadgeLock => "car.window.right.badge.lock",
@@ -1423,6 +1496,10 @@ impl SfSymbolV7 {
             Self::CubeCircleFill => "cube.circle.fill",
             Self::DesktopcomputerBadgeCheckmark => "desktopcomputer.badge.checkmark",
             Self::DesktopcomputerBadgeShieldCheckmark => "desktopcomputer.badge.shield.checkmark",
+            Self::Digitalcrown => "digitalcrown",
+            Self::DigitalcrownFill => "digitalcrown.fill",
+            Self::DigitalcrownHorizontal => "digitalcrown.horizontal",
+            Self::DigitalcrownHorizontalFill => "digitalcrown.horizontal.fill",
             Self::DisplayAndScrewdriver => "display.and.screwdriver",
             Self::DocumentOnTrash => "document.on.trash",
             Self::DocumentOnTrashFill => "document.on.trash.fill",
@@ -1507,6 +1584,7 @@ impl SfSymbolV7 {
             Self::HandThumbsdownHandThumbsupFilled => "hand.thumbsdown.hand.thumbsup.filled",
             Self::HandbagSensorTagRadiowavesLeftAndRight => "handbag.sensor.tag.radiowaves.left.and.right",
             Self::HandbagSensorTagRadiowavesLeftAndRightFill => "handbag.sensor.tag.radiowaves.left.and.right.fill",
+            Self::HeadProfileVisionProRemove => "head.profile.vision.pro.remove",
             Self::HeadphonesOverEar => "headphones.over.ear",
             Self::HeadphonesSensorTagRadiowavesLeftAndRight => "headphones.sensor.tag.radiowaves.left.and.right",
             Self::HeadphonesSensorTagRadiowavesLeftAndRightFill => "headphones.sensor.tag.radiowaves.left.and.right.fill",
@@ -1540,6 +1618,8 @@ impl SfSymbolV7 {
             Self::InsetFilledCircleSlash => "inset.filled.circle.slash",
             Self::InsetFilledLeftthirdMiddlethirdRightthirdRectangle => "inset.filled.leftthird.middlethird.rightthird.rectangle",
             Self::InsetFilledPano => "inset.filled.pano",
+            Self::InsetFilledRectangleAndPersonFilledSlash => "inset.filled.rectangle.and.person.filled.slash",
+            Self::InsetFilledRectangleAndPersonFilledSlashRtl => "inset.filled.rectangle.and.person.filled.slash.rtl",
             Self::InsetFilledRectangleAndPointerArrow => "inset.filled.rectangle.and.pointer.arrow",
             Self::InsetFilledTopthirdMiddlethirdBottomthirdRectangle => "inset.filled.topthird.middlethird.bottomthird.rectangle",
             Self::IpadBadgeCheckmark => "ipad.badge.checkmark",
@@ -1767,7 +1847,11 @@ impl SfSymbolV7 {
             Self::PointerArrowSlashSquareFill => "pointer.arrow.slash.square.fill",
             Self::PointerArrowSquare => "pointer.arrow.square",
             Self::PointerArrowSquareFill => "pointer.arrow.square.fill",
+            Self::RadicandSquareroot => "radicand.squareroot",
+            Self::RadicandSquarerootAr => "radicand.squareroot.ar",
             Self::Rectangle3GroupDashed => "rectangle.3.group.dashed",
+            Self::RectangleBadgeSparkles => "rectangle.badge.sparkles",
+            Self::RectangleBadgeSparklesFill => "rectangle.badge.sparkles.fill",
             Self::RectangleGrid1X3 => "rectangle.grid.1x3",
             Self::RectangleGrid1X3Fill => "rectangle.grid.1x3.fill",
             Self::RectangleLandscapeRotateSlash => "rectangle.landscape.rotate.slash",
@@ -1792,6 +1876,7 @@ impl SfSymbolV7 {
             Self::SliderHorizontalBelowCircleLefthalfFilledInverse => "slider.horizontal.below.circle.lefthalf.filled.inverse",
             Self::SliderHorizontalBelowCircleRighthalfFilled => "slider.horizontal.below.circle.righthalf.filled",
             Self::SliderHorizontalBelowCircleRighthalfFilledInverse => "slider.horizontal.below.circle.righthalf.filled.inverse",
+            Self::SliderHorizontalBelowSunMin => "slider.horizontal.below.sun.min",
             Self::SparkleTextClipboard => "sparkle.text.clipboard",
             Self::SparkleTextClipboardFill => "sparkle.text.clipboard.fill",
             Self::Sparkles2 => "sparkles.2",
@@ -1803,6 +1888,8 @@ impl SfSymbolV7 {
             Self::SpatialCaptureSlashFill => "spatial.capture.slash.fill",
             Self::SpeakerTrianglebadgeExclamationmark => "speaker.trianglebadge.exclamationmark",
             Self::SpeakerTrianglebadgeExclamationmarkFill => "speaker.trianglebadge.exclamationmark.fill",
+            Self::StarRectangle => "star.rectangle",
+            Self::StarRectangleFill => "star.rectangle.fill",
             Self::SteeringwheelBadgeLock => "steeringwheel.badge.lock",
             Self::StrikethroughDouble => "strikethrough.double",
             Self::StrokeLineDiagonal => "stroke.line.diagonal",
