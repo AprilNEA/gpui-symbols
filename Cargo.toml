@@ -1,6 +1,6 @@
 [package]
 name = "gpui-symbols"
-version = "0.3.1"
+version = "0.4.0"
 description = "SF Symbols rendering for GPUI"
 authors = ["AprilNEA <dev@aprilnea.com> (https://aprilnea.me)"]
 documentation = "https://docs.rs/gpui-symbols"

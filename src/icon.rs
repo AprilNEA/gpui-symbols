@@ -6,7 +6,8 @@
 use std::sync::Arc;
 
 use gpui::{
-    img, px, App, ImageSource, IntoElement, Pixels, RenderImage, SharedString, Styled, Window,
+    img, px, rgb, App, Hsla, ImageSource, IntoElement, Pixels, Rgba, RenderImage, SharedString,
+    Styled, Window,
 };
 
 use crate::SfSymbol;
@@ -98,18 +99,18 @@ impl_icon_name_for_sfsymbols!(
 pub struct Icon {
     name: SharedString,
     size: Pixels,
-    color: u32,
+    color: Hsla,
 }
 
 impl Icon {
     /// Create a new Icon with the given SF Symbol name.
     ///
-    /// Default size is 16px, default color is black (0x000000).
+    /// Default size is 16px, default color is black.
     pub fn new(name: impl Into<SharedString>) -> Self {
         Self {
             name: name.into(),
             size: px(16.),
-            color: 0x000000,
+            color: gpui::black(),
         }
     }
 
@@ -131,25 +132,50 @@ impl Icon {
         self
     }
 
+    /// Set the color of the icon using any type that converts to [`Hsla`].
+    ///
+    /// Accepts GPUI color types: `Hsla`, `Rgba`, or use helper functions like
+    /// `gpui::rgb(0xFF0000)`, `gpui::hsla(h, s, l, a)`.
+    ///
+    /// # Example
+    ///
+    /// ```rust,ignore
+    /// use gpui::{rgb, hsla};
+    ///
+    /// Icon::new("star.fill").color(rgb(0xFF0000));
+    /// Icon::new("heart.fill").color(hsla(0.0, 1.0, 0.5, 1.0));
+    /// ```
+    pub fn color(mut self, color: impl Into<Hsla>) -> Self {
+        self.color = color.into();
+        self
+    }
+
     /// Set the color of the icon as an RGB hex value.
+    ///
+    /// This is a convenience method. For more color options, use [`Icon::color`].
     ///
     /// # Example
     ///
     /// ```rust,ignore
     /// Icon::new("star.fill").text_color(0xFF0000) // Red
     /// ```
-    pub fn text_color(mut self, color: u32) -> Self {
-        self.color = color;
+    pub fn text_color(mut self, hex: u32) -> Self {
+        self.color = rgb(hex).into();
         self
     }
 
     /// Render the icon to an image.
     fn render_image(&self) -> Option<Arc<RenderImage>> {
         let size: f32 = self.size.into();
+        // Convert Hsla -> Rgba -> u32 (RGB only, ignore alpha for now)
+        let rgba: Rgba = self.color.into();
+        let color_u32: u32 = rgba.into();
+        // Shift from RGBA to RGB format (drop alpha byte)
+        let rgb = color_u32 >> 8;
 
         SfSymbol::new(self.name.as_ref())
             .size(size)
-            .color(self.color)
+            .color(rgb)
             .render()
     }
 }

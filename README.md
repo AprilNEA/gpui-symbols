@@ -114,7 +114,8 @@ High-level GPUI component (requires `component` feature).
 | `new(name)` | Create icon with SF Symbol name | - |
 | `from_name(T)` | Create from `IconName` type | - |
 | `size(Pixels)` | Set icon size | 16px |
-| `text_color(u32)` | Set RGB hex color | 0x000000 |
+| `color(impl Into<Hsla>)` | Set color (Hsla, Rgba, or `rgb(hex)`) | black |
+| `text_color(u32)` | Set RGB hex color (convenience) | black |
 
 ## Features
 
