@@ -91,7 +91,7 @@ impl_icon_name_for_sfsymbols!(
 /// fn view(window: &mut Window, cx: &mut Context<Self>) -> impl IntoElement {
 ///     div()
 ///         .child(Icon::new("star.fill"))
-///         .child(Icon::new("heart.fill").text_color(0xFF0000).with_size(px(24.)))
+///         .child(Icon::new("heart.fill").text_color(0xFF0000).size(px(24.)))
 /// }
 /// ```
 #[derive(Clone, IntoElement)]
@@ -119,6 +119,13 @@ impl Icon {
     }
 
     /// Set the size of the icon in pixels.
+    pub fn size(mut self, size: Pixels) -> Self {
+        self.size = size;
+        self
+    }
+
+    /// Alias for [`Icon::size`] for backward compatibility.
+    #[inline]
     pub fn with_size(mut self, size: Pixels) -> Self {
         self.size = size;
         self

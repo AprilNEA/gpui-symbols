@@ -56,7 +56,7 @@ use gpui::px;
 fn view(window: &mut Window, cx: &mut Context<Self>) -> impl IntoElement {
     div()
         .child(Icon::new("star.fill"))
-        .child(Icon::new("heart.fill").text_color(0xFF0000).with_size(px(24.)))
+        .child(Icon::new("heart.fill").text_color(0xFF0000).size(px(24.)))
 }
 ```
 
@@ -113,7 +113,7 @@ High-level GPUI component (requires `component` feature).
 |--------|-------------|---------|
 | `new(name)` | Create icon with SF Symbol name | - |
 | `from_name(T)` | Create from `IconName` type | - |
-| `with_size(Pixels)` | Set icon size | 16px |
+| `size(Pixels)` | Set icon size | 16px |
 | `text_color(u32)` | Set RGB hex color | 0x000000 |
 
 ## Features
