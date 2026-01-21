@@ -114,6 +114,29 @@ Icon::new("heart.fill")
     .text_color(0xFF0000);
 ```
 
+### Integration with gpui-component
+
+Use SF Symbols with [gpui-component](https://github.com/longbridge/gpui-component) Button via `child()`:
+
+```rust
+use gpui_symbols::{Icon as SfIcon, sfsymbols::SfSymbolV7};
+use gpui_component::Button;
+
+// Icon-only button
+Button::new("star-btn")
+    .child(SfIcon::from_name(SfSymbolV7::StarFill).size(px(16.)))
+
+// Icon + label button
+Button::new("favorite-btn")
+    .child(
+        div().flex().items_center().gap_2()
+            .child(SfIcon::from_name(SfSymbolV7::HeartFill).size(px(16.)).text_color(0xFF0000))
+            .child("Favorite")
+    )
+```
+
+> **Note**: gpui-component's `Button::icon()` expects SVG paths, while gpui-symbols renders to pixel images. Use `Button::child()` for SF Symbols integration.
+
 ## API
 
 ### `SfSymbol`
