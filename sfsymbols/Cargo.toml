@@ -1,6 +1,6 @@
 [package]
 name = "sfsymbols"
-version = "0.1.0"
+version = "0.1.1"
 description = "Type-safe SF Symbols enums for Rust"
 authors = ["AprilNEA <dev@aprilnea.com> (https://aprilnea.me)"]
 documentation = "https://docs.rs/sfsymbols"
