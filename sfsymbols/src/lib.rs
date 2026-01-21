@@ -147,11 +147,12 @@ pub use v6::SfSymbolV6;
 #[cfg(feature = "v7")]
 pub use v7::SfSymbolV7;
 
-/// Alias for the latest SF Symbols version (SfSymbolV7)
-#[cfg(feature = "v7")]
-pub type SfSymbol = SfSymbolV7;
-
 #[cfg(feature = "unified")]
 mod unified;
+/// Unified SF Symbols enum containing all symbols from all versions.
 #[cfg(feature = "unified")]
-pub use unified::SfSymbolAll;
+pub use unified::SfSymbol;
+
+/// Alias for the latest SF Symbols version (SfSymbolV7)
+#[cfg(all(feature = "v7", not(feature = "unified")))]
+pub type SfSymbol = SfSymbolV7;

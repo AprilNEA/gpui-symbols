@@ -1,6 +1,6 @@
 [package]
 name = "gpui-symbols"
-version = "0.6.0"
+version = "0.6.1"
 description = "Native SF Symbols for GPUI with type-safe Icon component"
 authors = ["AprilNEA <dev@aprilnea.com> (https://aprilnea.me)"]
 documentation = "https://docs.rs/gpui-symbols"
@@ -29,7 +29,7 @@ cache = ["gpui"]
 gpui = { version = "0.2.2", default-features = false, optional = true }
 smallvec = { version = "1.13", optional = true }
 image = { version = "0.25", optional = true }
-sfsymbols = { version = "0.2.0", default-features = false, optional = true }
+sfsymbols = { version = "0.2.1", default-features = false, optional = true }
 
 [target.'cfg(target_os = "macos")'.dependencies]
 objc = "0.2"

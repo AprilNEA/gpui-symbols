@@ -1,6 +1,6 @@
 [package]
 name = "sfsymbols"
-version = "0.2.0"
+version = "0.2.1"
 description = "Type-safe SF Symbols enums for Rust"
 authors = ["AprilNEA <dev@aprilnea.com> (https://aprilnea.me)"]
 documentation = "https://docs.rs/sfsymbols"
@@ -9,6 +9,7 @@ license = "MIT OR Apache-2.0"
 edition = "2021"
 keywords = ["sf-symbols", "macos", "icons", "apple"]
 categories = ["gui", "os::macos-apis"]
+exclude = ["target/"]
 
 [lib]
 name = "sfsymbols"

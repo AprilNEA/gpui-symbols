@@ -76,7 +76,7 @@ impl_icon_name_for_sfsymbols!(
     sfsymbols::SfSymbolV5,
     sfsymbols::SfSymbolV6,
     sfsymbols::SfSymbolV7,
-    sfsymbols::SfSymbolAll,
+    sfsymbols::SfSymbol,
 );
 
 /// A GPUI-compatible Icon component for rendering SF Symbols.
@@ -220,8 +220,11 @@ impl Icon {
         self
     }
 
-    /// Render the icon to an image.
-    fn render_image(&self) -> Option<Arc<RenderImage>> {
+    /// Render the icon to an image with its actual dimensions.
+    ///
+    /// Returns `(image, width, height)` where width and height are the actual
+    /// rendered pixel dimensions (may not be square).
+    fn render_image(&self) -> Option<(Arc<RenderImage>, u32, u32)> {
         let size: f32 = self.size.into();
         // Convert Hsla -> Rgba -> u32 (RGB only, ignore alpha for now)
         let rgba: Rgba = self.color.into();
@@ -235,16 +238,30 @@ impl Icon {
             .weight(self.weight)
             .symbol_scale(self.symbol_scale)
             .rendering_mode(self.rendering_mode)
-            .render()
+            .render_with_size()
     }
 }
 
 impl gpui::RenderOnce for Icon {
     fn render(self, _window: &mut Window, _cx: &mut App) -> impl IntoElement {
-        let size = self.size;
+        let target_size: f32 = self.size.into();
 
-        if let Some(image) = self.render_image() {
-            img(ImageSource::Render(image)).size(size).into_any_element()
+        if let Some((image, width, height)) = self.render_image() {
+            // Calculate display size preserving aspect ratio
+            // The target_size represents the maximum dimension (height for most icons)
+            let aspect_ratio = width as f32 / height as f32;
+            let (display_width, display_height) = if aspect_ratio >= 1.0 {
+                // Wider than tall: width is the constraining dimension
+                (target_size, target_size / aspect_ratio)
+            } else {
+                // Taller than wide: height is the constraining dimension
+                (target_size * aspect_ratio, target_size)
+            };
+
+            img(ImageSource::Render(image))
+                .w(px(display_width))
+                .h(px(display_height))
+                .into_any_element()
         } else {
             gpui::Empty.into_any_element()
         }

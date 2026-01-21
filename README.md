@@ -14,10 +14,10 @@ macOS SF Symbols rendering for Rust / GPUI applications.
 gpui-symbols = "0.6"
 
 # With GPUI integration
-gpui-symbols = { version = "0.6", features = ["gpui"] }
+gpui-symbols = { version = "0.7", features = ["gpui"] }
 
 # With Icon component (recommended for GPUI apps)
-gpui-symbols = { version = "0.6", features = ["component"] }
+gpui-symbols = { version = "0.7", features = ["component"] }
 ```
 
 ## Usage
@@ -79,31 +79,31 @@ let heart = Icon::from_name(SfSymbolV7::HeartFill).text_color(0xFF0000);
 
 #### Using Unified Symbol Enum (New in 0.6)
 
-Use `SfSymbolAll` for a single type covering all SF Symbols versions:
+Use `SfSymbol` for a single type covering all SF Symbols versions:
 
 ```rust
-use gpui_symbols::{Icon, sfsymbols::SfSymbolAll};
+use gpui_symbols::{Icon, sfsymbols::SfSymbol};
 
 // Unified enum with version metadata
-let icon = Icon::from_name(SfSymbolAll::Gearshape);
+let icon = Icon::from_name(SfSymbol::Gearshape);
 
 // Check minimum version required
-let (major, minor) = SfSymbolAll::Gearshape.min_version(); // (2, 0)
+let (major, minor) = SfSymbol::Gearshape.min_version(); // (2, 0)
 ```
 
 This is useful for cross-platform abstractions:
 
 ```rust
-use gpui_symbols::sfsymbols::SfSymbolAll;
+use gpui_symbols::sfsymbols::SfSymbol;
 
 enum AppIcon { Settings, Search, Plus }
 
 impl AppIcon {
-    fn sf_symbol(&self) -> SfSymbolAll {
+    fn sf_symbol(&self) -> SfSymbol {
         match self {
-            Self::Settings => SfSymbolAll::Gearshape,
-            Self::Search => SfSymbolAll::Magnifyingglass,
-            Self::Plus => SfSymbolAll::Plus,
+            Self::Settings => SfSymbol::Gearshape,
+            Self::Search => SfSymbol::Magnifyingglass,
+            Self::Plus => SfSymbol::Plus,
         }
     }
 }
@@ -126,6 +126,19 @@ define_icons! {
 
 let icon = Icon::from_name(AppIcon::Star).text_color(0xFF0000);
 ```
+
+### Aspect Ratio Preservation (New in 0.6.1)
+
+SF Symbols are not always square - for example, `gearshape.2` is wider than tall. The `Icon` component automatically preserves the original aspect ratio:
+
+```rust
+// Non-square symbols render correctly
+Icon::new("gearshape").size(px(32.))     // Square gear
+Icon::new("gearshape.2").size(px(32.))   // Wide: two gears side by side
+Icon::new("person.3.fill").size(px(32.)) // Wide: three people
+```
+
+The `size()` method sets the maximum dimension while maintaining the symbol's natural proportions.
 
 ### Advanced Symbol Options
 
@@ -200,7 +213,7 @@ High-level GPUI component (requires `component` feature).
 |--------|-------------|---------|
 | `new(name)` | Create icon with SF Symbol name | - |
 | `from_name(T)` | Create from `IconName` type | - |
-| `size(Pixels)` | Set icon size | 16px |
+| `size(Pixels)` | Set maximum dimension (preserves aspect ratio) | 16px |
 | `color(impl Into<Hsla>)` | Set color (Hsla, Rgba, or `rgb(hex)`) | black |
 | `text_color(u32)` | Set RGB hex color (convenience) | black |
 | `weight(SymbolWeight)` | Symbol weight | Regular |

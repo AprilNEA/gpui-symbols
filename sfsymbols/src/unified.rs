@@ -8,7 +8,7 @@
 /// Use `min_version()` to check the minimum SF Symbols version required.
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Hash)]
 #[non_exhaustive]
-pub enum SfSymbolAll {
+pub enum SfSymbol {
     /// `a` (since v1.0)
     A,
     /// `a.book.closed` (since v2.0)
@@ -18379,7 +18379,7 @@ pub enum SfSymbolAll {
     r#Return,
 }
 
-impl SfSymbolAll {
+impl SfSymbol {
     /// Returns the SF Symbol name string.
     #[inline]
     pub const fn name(&self) -> &'static str {
@@ -36771,14 +36771,14 @@ impl SfSymbolAll {
     }
 }
 
-impl AsRef<str> for SfSymbolAll {
+impl AsRef<str> for SfSymbol {
     #[inline]
     fn as_ref(&self) -> &str {
         self.name()
     }
 }
 
-impl std::fmt::Display for SfSymbolAll {
+impl std::fmt::Display for SfSymbol {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         f.write_str(self.name())
     }

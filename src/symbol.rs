@@ -44,8 +44,9 @@ impl CacheKey {
 }
 
 /// Global cache for rendered symbols.
+/// Stores (image, width, height) to preserve aspect ratio information.
 #[cfg(feature = "cache")]
-type SymbolCache = HashMap<CacheKey, std::sync::Arc<gpui::RenderImage>>;
+type SymbolCache = HashMap<CacheKey, (std::sync::Arc<gpui::RenderImage>, u32, u32)>;
 
 #[cfg(feature = "cache")]
 static SYMBOL_CACHE: OnceLock<Mutex<SymbolCache>> = OnceLock::new();
@@ -327,6 +328,23 @@ impl SfSymbol {
     /// Requires the `gpui` feature.
     #[cfg(all(feature = "gpui", feature = "cache"))]
     pub fn render(&self) -> Option<Arc<RenderImage>> {
+        self.render_with_size().map(|(image, _, _)| image)
+    }
+
+    /// Render the symbol to a GPUI RenderImage with its actual dimensions.
+    ///
+    /// Returns `(image, width, height)` where width and height are the actual
+    /// rendered pixel dimensions. SF Symbols may not be square - use these
+    /// dimensions to preserve the correct aspect ratio when displaying.
+    ///
+    /// With the `cache` feature enabled, results are cached globally
+    /// to avoid redundant rendering. Use [`clear_cache`] to free memory if needed.
+    ///
+    /// Returns `None` if the symbol cannot be found or rendered.
+    ///
+    /// Requires the `gpui` feature.
+    #[cfg(all(feature = "gpui", feature = "cache"))]
+    pub fn render_with_size(&self) -> Option<(Arc<RenderImage>, u32, u32)> {
         let cache_key = CacheKey::new(
             &self.name,
             self.size,
@@ -341,8 +359,8 @@ impl SfSymbol {
         {
             let cache = get_cache();
             if let Ok(guard) = cache.lock() {
-                if let Some(cached) = guard.get(&cache_key) {
-                    return Some(Arc::clone(cached));
+                if let Some((cached, w, h)) = guard.get(&cache_key) {
+                    return Some((Arc::clone(cached), *w, *h));
                 }
             }
         }
@@ -361,11 +379,11 @@ impl SfSymbol {
         {
             let cache = get_cache();
             if let Ok(mut guard) = cache.lock() {
-                guard.insert(cache_key, Arc::clone(&image));
+                guard.insert(cache_key, (Arc::clone(&image), width, height));
             }
         }
 
-        Some(image)
+        Some((image, width, height))
     }
 
     /// Render the symbol to a GPUI RenderImage.
@@ -375,6 +393,20 @@ impl SfSymbol {
     /// Requires the `gpui` feature.
     #[cfg(all(feature = "gpui", not(feature = "cache")))]
     pub fn render(&self) -> Option<Arc<RenderImage>> {
+        self.render_with_size().map(|(image, _, _)| image)
+    }
+
+    /// Render the symbol to a GPUI RenderImage with its actual dimensions.
+    ///
+    /// Returns `(image, width, height)` where width and height are the actual
+    /// rendered pixel dimensions. SF Symbols may not be square - use these
+    /// dimensions to preserve the correct aspect ratio when displaying.
+    ///
+    /// Returns `None` if the symbol cannot be found or rendered.
+    ///
+    /// Requires the `gpui` feature.
+    #[cfg(all(feature = "gpui", not(feature = "cache")))]
+    pub fn render_with_size(&self) -> Option<(Arc<RenderImage>, u32, u32)> {
         let (width, height, mut data) = self.render_rgba()?;
 
         // Convert RGBA to BGRA for GPUI's Metal renderer
@@ -383,7 +415,7 @@ impl SfSymbol {
         let rgba_image = RgbaImage::from_raw(width, height, data)?;
         let frame = Frame::new(rgba_image);
 
-        Some(Arc::new(RenderImage::new(smallvec![frame])))
+        Some((Arc::new(RenderImage::new(smallvec![frame])), width, height))
     }
 }
 

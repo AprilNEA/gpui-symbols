@@ -220,21 +220,22 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         lib.push_str(&format!("pub use v{}::SfSymbolV{};\n", major, major));
     }
 
-    // Alias for latest
+    // Unified module (takes precedence over version alias)
+    lib.push_str("\n#[cfg(feature = \"unified\")]\n");
+    lib.push_str("mod unified;\n");
+    lib.push_str("/// Unified SF Symbols enum containing all symbols from all versions.\n");
+    lib.push_str("#[cfg(feature = \"unified\")]\n");
+    lib.push_str("pub use unified::SfSymbol;\n");
+
+    // Alias for latest (only when unified is not enabled)
     if let Some(&latest) = major_versions.last() {
         lib.push_str(&format!(
             "\n/// Alias for the latest SF Symbols version (SfSymbolV{})\n",
             latest
         ));
-        lib.push_str(&format!("#[cfg(feature = \"v{}\")]\n", latest));
+        lib.push_str(&format!("#[cfg(all(feature = \"v{}\", not(feature = \"unified\")))]\n", latest));
         lib.push_str(&format!("pub type SfSymbol = SfSymbolV{};\n", latest));
     }
-
-    // Unified module
-    lib.push_str("\n#[cfg(feature = \"unified\")]\n");
-    lib.push_str("mod unified;\n");
-    lib.push_str("#[cfg(feature = \"unified\")]\n");
-    lib.push_str("pub use unified::SfSymbolAll;\n");
 
     fs::write(output_path.join("lib.rs"), &lib)?;
     println!("Generated lib.rs");
@@ -257,7 +258,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         println!("Generated {} ({} symbols, merged)", filename, symbols.len());
     }
 
-    // Generate unified file (SfSymbolAll)
+    // Generate unified file (SfSymbol)
     let unified_content = generate_unified_enum_file(&unified_symbols);
     fs::write(output_path.join("unified.rs"), &unified_content)?;
     println!(
@@ -315,7 +316,7 @@ fn generate_unified_enum_file(symbols: &[UnifiedSymbol]) -> String {
     content.push_str("/// Use `min_version()` to check the minimum SF Symbols version required.\n");
     content.push_str("#[derive(Clone, Copy, Debug, PartialEq, Eq, Hash)]\n");
     content.push_str("#[non_exhaustive]\n");
-    content.push_str("pub enum SfSymbolAll {\n");
+    content.push_str("pub enum SfSymbol {\n");
 
     for symbol in symbols {
         content.push_str(&format!(
@@ -327,7 +328,7 @@ fn generate_unified_enum_file(symbols: &[UnifiedSymbol]) -> String {
 
     content.push_str("}\n\n");
 
-    content.push_str("impl SfSymbolAll {\n");
+    content.push_str("impl SfSymbol {\n");
     content.push_str("    /// Returns the SF Symbol name string.\n");
     content.push_str("    #[inline]\n");
     content.push_str("    pub const fn name(&self) -> &'static str {\n");
@@ -367,14 +368,14 @@ fn generate_unified_enum_file(symbols: &[UnifiedSymbol]) -> String {
     content.push_str("    }\n");
     content.push_str("}\n\n");
 
-    content.push_str("impl AsRef<str> for SfSymbolAll {\n");
+    content.push_str("impl AsRef<str> for SfSymbol {\n");
     content.push_str("    #[inline]\n");
     content.push_str("    fn as_ref(&self) -> &str {\n");
     content.push_str("        self.name()\n");
     content.push_str("    }\n");
     content.push_str("}\n\n");
 
-    content.push_str("impl std::fmt::Display for SfSymbolAll {\n");
+    content.push_str("impl std::fmt::Display for SfSymbol {\n");
     content.push_str("    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {\n");
     content.push_str("        f.write_str(self.name())\n");
     content.push_str("    }\n");

@@ -118,6 +118,25 @@ impl Render for SfSymbolsView {
                             .child(ColoredIconCard::new("drop.fill", 0x007AFF, "Blue")),
                     ),
             )
+            // Section 4: Non-square symbols (aspect ratio preservation)
+            .child(
+                div()
+                    .flex()
+                    .flex_col()
+                    .gap_2()
+                    .child(div().text_base().child("Non-square symbols (aspect ratio preserved):"))
+                    .child(
+                        div()
+                            .flex()
+                            .flex_wrap()
+                            .gap_4()
+                            .child(AspectRatioCard::new("gearshape", "Single gear"))
+                            .child(AspectRatioCard::new("gearshape.2", "Two gears"))
+                            .child(AspectRatioCard::new("person.fill", "Person"))
+                            .child(AspectRatioCard::new("person.2.fill", "Two people"))
+                            .child(AspectRatioCard::new("person.3.fill", "Three people")),
+                    ),
+            )
     }
 }
 
@@ -229,6 +248,44 @@ impl RenderOnce for ColoredIconCard {
                             .with_size(px(32.))
                             .text_color(self.color),
                     ),
+            )
+            .child(div().text_sm().text_color(rgb(0x666666)).child(self.label))
+    }
+}
+
+/// Icon card demonstrating aspect ratio preservation
+#[derive(IntoElement)]
+struct AspectRatioCard {
+    name: &'static str,
+    label: &'static str,
+}
+
+impl AspectRatioCard {
+    fn new(name: &'static str, label: &'static str) -> Self {
+        Self { name, label }
+    }
+}
+
+impl RenderOnce for AspectRatioCard {
+    fn render(self, _window: &mut Window, _cx: &mut App) -> impl IntoElement {
+        div()
+            .flex()
+            .flex_col()
+            .items_center()
+            .gap_2()
+            .p_3()
+            .rounded_lg()
+            .bg(rgb(0xfff0f5))
+            .hover(|style| style.bg(rgb(0xffe0eb)))
+            .child(
+                div()
+                    .h(px(48.))
+                    .min_w(px(48.))
+                    .flex()
+                    .items_center()
+                    .justify_center()
+                    // Icons preserve their natural aspect ratio
+                    .child(Icon::new(self.name).with_size(px(32.))),
             )
             .child(div().text_sm().text_color(rgb(0x666666)).child(self.label))
     }
