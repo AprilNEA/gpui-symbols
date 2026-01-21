@@ -135,6 +135,13 @@ Common symbols:
 - `gearshape`, `magnifyingglass`, `trash`
 - `person.fill`, `folder.fill`, `doc.fill`
 
+## Related Crates
+
+| Crate | Description |
+|-------|-------------|
+| [sfsymbols](./sfsymbols) | Type-safe SF Symbols enums (9000+ symbols) |
+| [sfsymbols-codegen](./sfsymbols-codegen) | Code generator for sfsymbols |
+
 ## License
 
 MIT OR Apache-2.0
