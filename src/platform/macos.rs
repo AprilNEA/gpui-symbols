@@ -176,20 +176,7 @@ pub fn render_sf_symbol(
         let old_context: *mut Object = msg_send![ns_graphics_context_class, currentContext];
         let _: () = msg_send![ns_graphics_context_class, setCurrentContext: context];
 
-        // 9. Fill white background
-        let white_color: *mut Object = msg_send![ns_color_class, whiteColor];
-        let _: () = msg_send![white_color, set];
-        let fill_rect = NSRect {
-            origin: NSPoint { x: 0.0, y: 0.0 },
-            size: NSSize {
-                width: pixel_width as f64,
-                height: pixel_height as f64,
-            },
-        };
-        let ns_bezier_class = Class::get("NSBezierPath")?;
-        let _: () = msg_send![ns_bezier_class, fillRect: fill_rect];
-
-        // 10. Draw symbol
+        // 9. Draw symbol (transparent background - bitmap is zero-initialized)
         let draw_rect = NSRect {
             origin: NSPoint { x: 0.0, y: 0.0 },
             size: NSSize {
@@ -209,10 +196,10 @@ pub fn render_sf_symbol(
             fraction: 1.0f64
         ];
 
-        // 11. Restore context
+        // 10. Restore context
         let _: () = msg_send![ns_graphics_context_class, setCurrentContext: old_context];
 
-        // 12. Get pixel data
+        // 11. Get pixel data
         let bitmap_data: *const u8 = msg_send![bitmap_rep, bitmapData];
         if bitmap_data.is_null() {
             return None;
