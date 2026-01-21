@@ -61,7 +61,7 @@ mod symbol;
 mod icon;
 
 // Re-export main types
-pub use symbol::SfSymbol;
+pub use symbol::{RenderingMode, SfSymbol, SymbolScale, SymbolWeight};
 
 #[cfg(feature = "component")]
 pub use icon::{Icon, IconName};

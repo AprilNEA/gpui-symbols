@@ -1,5 +1,6 @@
 //! macOS platform implementation using AppKit.
 
+use crate::symbol::{RenderingMode, SymbolScale, SymbolWeight};
 use objc::runtime::{Class, Object};
 use objc::{msg_send, sel, sel_impl};
 
@@ -32,6 +33,9 @@ pub struct NSRect {
 /// * `point_size` - The point size for rendering
 /// * `scale` - The scale factor (e.g., 2.0 for Retina)
 /// * `color` - RGB hex color value
+/// * `weight` - Symbol weight (ultraLight to black)
+/// * `symbol_scale` - Symbol scale (small, medium, large)
+/// * `rendering_mode` - Rendering mode (monochrome, hierarchical, palette, multicolor)
 ///
 /// # Returns
 ///
@@ -41,6 +45,9 @@ pub fn render_sf_symbol(
     point_size: f32,
     scale: f32,
     color: u32,
+    weight: SymbolWeight,
+    symbol_scale: SymbolScale,
+    rendering_mode: RenderingMode,
 ) -> Option<(u32, u32, Vec<u8>)> {
     unsafe {
         // 1. Create NSString
@@ -76,18 +83,40 @@ pub fn render_sf_symbol(
             alpha: 1.0f64
         ];
 
-        // 4. Create symbol configuration with size and color
+        // 4. Create symbol configuration with size, weight, scale, and color
         let config_class = Class::get("NSImageSymbolConfiguration")?;
 
+        // Size and weight configuration
         let size_config: *mut Object = msg_send![
             config_class,
             configurationWithPointSize: point_size as f64
-            weight: 0.0f64
-            scale: 2i64  // NSImageSymbolScaleLarge
+            weight: weight.to_ns_weight()
+            scale: symbol_scale.to_ns_scale()
         ];
 
-        let color_config: *mut Object =
-            msg_send![config_class, configurationWithHierarchicalColor: symbol_color];
+        // Color configuration based on rendering mode
+        let color_config: *mut Object = match rendering_mode {
+            RenderingMode::Monochrome => {
+                // For monochrome, we use preferringMonochrome + tint color
+                let mono_config: *mut Object =
+                    msg_send![config_class, configurationPreferringMonochrome];
+                let tint_config: *mut Object =
+                    msg_send![config_class, configurationWithHierarchicalColor: symbol_color];
+                msg_send![mono_config, configurationByApplyingConfiguration: tint_config]
+            }
+            RenderingMode::Hierarchical => {
+                msg_send![config_class, configurationWithHierarchicalColor: symbol_color]
+            }
+            RenderingMode::Palette => {
+                // Palette mode with single color falls back to hierarchical-like behavior
+                // For true palette, would need multiple colors
+                msg_send![config_class, configurationWithHierarchicalColor: symbol_color]
+            }
+            RenderingMode::Multicolor => {
+                // Multicolor uses the symbol's built-in colors
+                msg_send![config_class, configurationPreferringMulticolor]
+            }
+        };
 
         let combined_config: *mut Object =
             msg_send![size_config, configurationByApplyingConfiguration: color_config];

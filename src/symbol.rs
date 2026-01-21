@@ -2,6 +2,90 @@
 
 use crate::platform;
 
+/// Symbol weight for SF Symbols.
+///
+/// Corresponds to NSFontWeight values used in NSImageSymbolConfiguration.
+#[derive(Debug, Clone, Copy, PartialEq, Default)]
+pub enum SymbolWeight {
+    /// Ultra light weight (-0.8)
+    UltraLight,
+    /// Thin weight (-0.6)
+    Thin,
+    /// Light weight (-0.4)
+    Light,
+    /// Regular weight (0.0) - default
+    #[default]
+    Regular,
+    /// Medium weight (0.23)
+    Medium,
+    /// Semibold weight (0.3)
+    Semibold,
+    /// Bold weight (0.4)
+    Bold,
+    /// Heavy weight (0.56)
+    Heavy,
+    /// Black weight (0.62)
+    Black,
+}
+
+impl SymbolWeight {
+    /// Convert to NSFontWeight value.
+    pub fn to_ns_weight(self) -> f64 {
+        match self {
+            Self::UltraLight => -0.8,
+            Self::Thin => -0.6,
+            Self::Light => -0.4,
+            Self::Regular => 0.0,
+            Self::Medium => 0.23,
+            Self::Semibold => 0.3,
+            Self::Bold => 0.4,
+            Self::Heavy => 0.56,
+            Self::Black => 0.62,
+        }
+    }
+}
+
+/// Symbol scale for SF Symbols.
+///
+/// Corresponds to NSImageSymbolScale values.
+#[derive(Debug, Clone, Copy, PartialEq, Default)]
+pub enum SymbolScale {
+    /// Small scale (1)
+    Small,
+    /// Medium scale (2) - default
+    #[default]
+    Medium,
+    /// Large scale (3)
+    Large,
+}
+
+impl SymbolScale {
+    /// Convert to NSImageSymbolScale value.
+    pub fn to_ns_scale(self) -> i64 {
+        match self {
+            Self::Small => 1,
+            Self::Medium => 2,
+            Self::Large => 3,
+        }
+    }
+}
+
+/// Rendering mode for SF Symbols.
+///
+/// Determines how the symbol is colorized.
+#[derive(Debug, Clone, Copy, PartialEq, Default)]
+pub enum RenderingMode {
+    /// Single color applied to entire symbol
+    Monochrome,
+    /// Hierarchical coloring with primary color and automatic opacity layers
+    #[default]
+    Hierarchical,
+    /// Multiple colors (requires palette colors, falls back to hierarchical)
+    Palette,
+    /// Original multicolor design of the symbol
+    Multicolor,
+}
+
 #[cfg(feature = "gpui")]
 use std::sync::Arc;
 
@@ -17,17 +101,20 @@ use smallvec::smallvec;
 /// # Example
 ///
 /// ```rust,ignore
-/// use gpui_symbols::SfSymbol;
+/// use gpui_symbols::{SfSymbol, SymbolWeight, SymbolScale, RenderingMode};
 ///
 /// // Render to raw RGBA
 /// let (width, height, data) = SfSymbol::new("star.fill")
 ///     .render_rgba()
 ///     .unwrap();
 ///
-/// // With gpui feature:
+/// // With gpui feature and advanced options:
 /// let image = SfSymbol::new("heart.fill")
 ///     .size(48.0)
 ///     .color(0xFF0000)
+///     .weight(SymbolWeight::Bold)
+///     .symbol_scale(SymbolScale::Large)
+///     .rendering_mode(RenderingMode::Hierarchical)
 ///     .render()
 ///     .unwrap();
 /// ```
@@ -37,6 +124,9 @@ pub struct SfSymbol {
     size: f32,
     scale: f32,
     color: u32,
+    weight: SymbolWeight,
+    symbol_scale: SymbolScale,
+    rendering_mode: RenderingMode,
 }
 
 impl SfSymbol {
@@ -49,6 +139,9 @@ impl SfSymbol {
             size: 32.0,
             scale: 2.0,
             color: 0x000000, // black
+            weight: SymbolWeight::default(),
+            symbol_scale: SymbolScale::default(),
+            rendering_mode: RenderingMode::default(),
         }
     }
 
@@ -78,11 +171,75 @@ impl SfSymbol {
         self
     }
 
+    /// Set the symbol weight (default: Regular).
+    ///
+    /// # Example
+    ///
+    /// ```rust,ignore
+    /// use gpui_symbols::{SfSymbol, SymbolWeight};
+    ///
+    /// SfSymbol::new("star.fill")
+    ///     .weight(SymbolWeight::Bold)
+    ///     .render();
+    /// ```
+    pub fn weight(mut self, weight: SymbolWeight) -> Self {
+        self.weight = weight;
+        self
+    }
+
+    /// Set the symbol scale (default: Medium).
+    ///
+    /// This controls the overall visual weight/size of the symbol
+    /// independent of the point size.
+    ///
+    /// # Example
+    ///
+    /// ```rust,ignore
+    /// use gpui_symbols::{SfSymbol, SymbolScale};
+    ///
+    /// SfSymbol::new("star.fill")
+    ///     .symbol_scale(SymbolScale::Large)
+    ///     .render();
+    /// ```
+    pub fn symbol_scale(mut self, symbol_scale: SymbolScale) -> Self {
+        self.symbol_scale = symbol_scale;
+        self
+    }
+
+    /// Set the rendering mode (default: Hierarchical).
+    ///
+    /// - `Monochrome`: Single color for the entire symbol
+    /// - `Hierarchical`: Primary color with automatic opacity layers
+    /// - `Palette`: Multiple distinct colors (requires palette support)
+    /// - `Multicolor`: Original multicolor design
+    ///
+    /// # Example
+    ///
+    /// ```rust,ignore
+    /// use gpui_symbols::{SfSymbol, RenderingMode};
+    ///
+    /// SfSymbol::new("cloud.sun.fill")
+    ///     .rendering_mode(RenderingMode::Multicolor)
+    ///     .render();
+    /// ```
+    pub fn rendering_mode(mut self, mode: RenderingMode) -> Self {
+        self.rendering_mode = mode;
+        self
+    }
+
     /// Render to raw RGBA pixel data.
     ///
     /// Returns `(width, height, rgba_data)` or `None` if rendering fails.
     pub fn render_rgba(&self) -> Option<(u32, u32, Vec<u8>)> {
-        platform::render_sf_symbol(&self.name, self.size, self.scale, self.color)
+        platform::render_sf_symbol(
+            &self.name,
+            self.size,
+            self.scale,
+            self.color,
+            self.weight,
+            self.symbol_scale,
+            self.rendering_mode,
+        )
     }
 
     /// Render the symbol to a GPUI RenderImage.

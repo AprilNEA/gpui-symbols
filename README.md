@@ -6,13 +6,13 @@ macOS SF Symbols rendering for Rust / GPUI applications.
 
 ```toml
 [dependencies]
-gpui-symbols = "0.2"
+gpui-symbols = "0.5"
 
 # With GPUI integration
-gpui-symbols = { version = "0.2", features = ["gpui"] }
+gpui-symbols = { version = "0.5", features = ["gpui"] }
 
 # With Icon component (recommended for GPUI apps)
-gpui-symbols = { version = "0.2", features = ["component"] }
+gpui-symbols = { version = "0.5", features = ["component"] }
 ```
 
 ## Usage
@@ -90,6 +90,30 @@ define_icons! {
 let icon = Icon::from_name(AppIcon::Star).text_color(0xFF0000);
 ```
 
+### Advanced Symbol Options
+
+Customize weight, scale, and rendering mode:
+
+```rust
+use gpui_symbols::{Icon, SymbolWeight, SymbolScale, RenderingMode};
+
+// Bold weight icon
+Icon::new("star.fill")
+    .weight(SymbolWeight::Bold)
+    .size(px(24.));
+
+// Large scale with multicolor rendering
+Icon::new("cloud.sun.fill")
+    .symbol_scale(SymbolScale::Large)
+    .rendering_mode(RenderingMode::Multicolor);
+
+// Thin weight, monochrome style
+Icon::new("heart.fill")
+    .weight(SymbolWeight::Thin)
+    .rendering_mode(RenderingMode::Monochrome)
+    .text_color(0xFF0000);
+```
+
 ## API
 
 ### `SfSymbol`
@@ -102,6 +126,9 @@ Low-level builder for rendering SF Symbols.
 | `size(f32)` | Point size | 32.0 |
 | `scale(f32)` | Scale factor (Retina) | 2.0 |
 | `color(u32)` | RGB hex color | 0x000000 |
+| `weight(SymbolWeight)` | Symbol weight | Regular |
+| `symbol_scale(SymbolScale)` | Symbol scale | Medium |
+| `rendering_mode(RenderingMode)` | Rendering mode | Hierarchical |
 | `render_rgba()` | Render to `(width, height, Vec<u8>)` | - |
 | `render()` | Render to `Arc<RenderImage>` (requires `gpui` feature) | - |
 
@@ -116,6 +143,17 @@ High-level GPUI component (requires `component` feature).
 | `size(Pixels)` | Set icon size | 16px |
 | `color(impl Into<Hsla>)` | Set color (Hsla, Rgba, or `rgb(hex)`) | black |
 | `text_color(u32)` | Set RGB hex color (convenience) | black |
+| `weight(SymbolWeight)` | Symbol weight | Regular |
+| `symbol_scale(SymbolScale)` | Symbol scale | Medium |
+| `rendering_mode(RenderingMode)` | Rendering mode | Hierarchical |
+
+### Enums
+
+**`SymbolWeight`**: `UltraLight`, `Thin`, `Light`, `Regular`, `Medium`, `Semibold`, `Bold`, `Heavy`, `Black`
+
+**`SymbolScale`**: `Small`, `Medium`, `Large`
+
+**`RenderingMode`**: `Monochrome`, `Hierarchical`, `Palette`, `Multicolor`
 
 ## Features
 

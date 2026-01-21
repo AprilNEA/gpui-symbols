@@ -10,7 +10,7 @@ use gpui::{
     Styled, Window,
 };
 
-use crate::SfSymbol;
+use crate::{RenderingMode, SfSymbol, SymbolScale, SymbolWeight};
 
 /// Trait for types that can provide an SF Symbol name.
 ///
@@ -100,6 +100,9 @@ pub struct Icon {
     name: SharedString,
     size: Pixels,
     color: Hsla,
+    weight: SymbolWeight,
+    symbol_scale: SymbolScale,
+    rendering_mode: RenderingMode,
 }
 
 impl Icon {
@@ -111,6 +114,9 @@ impl Icon {
             name: name.into(),
             size: px(16.),
             color: gpui::black(),
+            weight: SymbolWeight::default(),
+            symbol_scale: SymbolScale::default(),
+            rendering_mode: RenderingMode::default(),
         }
     }
 
@@ -164,6 +170,55 @@ impl Icon {
         self
     }
 
+    /// Set the symbol weight (default: Regular).
+    ///
+    /// # Example
+    ///
+    /// ```rust,ignore
+    /// use gpui_symbols::{Icon, SymbolWeight};
+    ///
+    /// Icon::new("star.fill").weight(SymbolWeight::Bold);
+    /// ```
+    pub fn weight(mut self, weight: SymbolWeight) -> Self {
+        self.weight = weight;
+        self
+    }
+
+    /// Set the symbol scale (default: Medium).
+    ///
+    /// Controls the overall visual weight of the symbol independent of point size.
+    ///
+    /// # Example
+    ///
+    /// ```rust,ignore
+    /// use gpui_symbols::{Icon, SymbolScale};
+    ///
+    /// Icon::new("star.fill").symbol_scale(SymbolScale::Large);
+    /// ```
+    pub fn symbol_scale(mut self, scale: SymbolScale) -> Self {
+        self.symbol_scale = scale;
+        self
+    }
+
+    /// Set the rendering mode (default: Hierarchical).
+    ///
+    /// - `Monochrome`: Single color for entire symbol
+    /// - `Hierarchical`: Primary color with automatic opacity layers
+    /// - `Palette`: Multiple distinct colors
+    /// - `Multicolor`: Original multicolor design
+    ///
+    /// # Example
+    ///
+    /// ```rust,ignore
+    /// use gpui_symbols::{Icon, RenderingMode};
+    ///
+    /// Icon::new("cloud.sun.fill").rendering_mode(RenderingMode::Multicolor);
+    /// ```
+    pub fn rendering_mode(mut self, mode: RenderingMode) -> Self {
+        self.rendering_mode = mode;
+        self
+    }
+
     /// Render the icon to an image.
     fn render_image(&self) -> Option<Arc<RenderImage>> {
         let size: f32 = self.size.into();
@@ -176,6 +231,9 @@ impl Icon {
         SfSymbol::new(self.name.as_ref())
             .size(size)
             .color(rgb)
+            .weight(self.weight)
+            .symbol_scale(self.symbol_scale)
+            .rendering_mode(self.rendering_mode)
             .render()
     }
 }
